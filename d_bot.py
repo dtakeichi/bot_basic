@@ -33,3 +33,12 @@ amount = 0.0001
 line_notify = LineNotify()
 line_notify.send("Start trading")
 
+
+while 1:
+    entry_signal = calc_entry_signal()
+    
+    if entry_signal == True:
+        long_entry(bybit)
+        entry_price = get_ohlcv(limit=1)['close'][199] #参入時の価格を保持
+        time.sleep(300)
+        long_close(bybit) # 5分後にポジションは自動で解消することにする
