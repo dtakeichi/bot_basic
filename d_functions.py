@@ -83,15 +83,15 @@ def calc_features(df):
     df = pd.read_pickle('df_features.pkl') で高速に呼び出せる
     """
     
-    open = df['Open']
-    high = df['High']
-    low = df['Low']
-    close = df['Close']
-    volume = df['Volume']
+    open = df['open']
+    high = df['high']
+    low = df['low']
+    close = df['close']
+    volume = df['volume']
     
     orig_columns = df.columns # もともとのdfの列名を保持
 
-    hilo = (df['High'] + df['Low']) / 2 # 高値と低値の平均を算出
+    hilo = (df['high'] + df['low']) / 2 # 高値と低値の平均を算出
     
     # 以下 68個の特徴量を片っ端から生み出す
     df['BBANDS_upperband'], df['BBANDS_middleband'], df['BBANDS_lowerband'] = talib.BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
