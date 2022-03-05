@@ -15,7 +15,7 @@ bybit = ccxt.bybit({"apiKey":"?????????", "secret":"?????????",
 bybit.fetch_balance({"coin": "USDT"})
 
 
-def long_entry(instance, qty=0.001)
+def long_entry(instance, qty=0.001):
 	"""
 	long, market注文で新規参入
 	"""
@@ -30,7 +30,7 @@ def long_entry(instance, qty=0.001)
             }
         )
 
-def long_close(instance, qty=0.001)
+def long_close(instance, qty=0.001):
 	"""
 	long position をmarket注文で解消
 	"""
