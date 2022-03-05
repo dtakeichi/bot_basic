@@ -15,7 +15,7 @@ def get_candles(timeframe="minute", limit=1000):
     base_url = f"https://min-api.cryptocompare.com/data/v2/histo{timeframe}" 
 
     params = {
-        "fsym": "BTC",  # 通貨名(The cryptocurrency symbol of interest)
+        "fsym": "ETH",  # 通貨名(The cryptocurrency symbol of interest)
         "tsym": "USDT",  # 通貨名(The currency symbol to convert into)
         "limit": limit, # 取得件数(The number of data points to return)
     }
