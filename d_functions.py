@@ -22,6 +22,7 @@ def get_ohlcv(symbol="BTCUSDT", limit=1000, interval=1):
     使用例
     df = fetch_ohlcv_v2(symbol="XTZUSDT", limit=600,interval=1)
     symbol = 通貨名, limit = 取得行数, interval = 取得間隔(分)
+    limitが200を超える場合はそれを超える最小の200の倍数となります。limit=250 なら400, 1234なら1400
     """
 
     # 関数の中で関数を定義
