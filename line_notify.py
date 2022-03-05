@@ -1,6 +1,6 @@
 import requests
 
-LINE_NOTIFY_TOKEN = "~~~~~~~~~!!!!!!"
+LINE_NOTIFY_TOKEN = "~~~~~~~~~!!!!!!@@@"
 
 class LineNotify:
     def __init__(self):
