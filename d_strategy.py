@@ -12,4 +12,4 @@ def calc_entry_signal():
     rule1 = df['volume'][198] > volume_mean + 2*volume_std
     rule2 = df['close'].diff(1)[198] > 0 and df['close'].diff(1)[197] < 0 and df['close'].diff(1)[196] < 0
     
-    return rule2 and rule1 # 条件(1)をなかなか満たさないので and以降コメントアウト
+    return rule1 # and rule2  条件(2)をなかなか満たさないので and以降コメントアウト
