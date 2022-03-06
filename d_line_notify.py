@@ -1,9 +1,6 @@
 # LINE通知の設定を行うためのファイル
 import requests
 
-LINE_NOTIFY_TOKEN = "?????????????????????"
-
-
 """
 使い方
 (1) インスタンス化 line_notify = LineNotify()
@@ -11,8 +8,8 @@ LINE_NOTIFY_TOKEN = "?????????????????????"
 """
 
 class LineNotify:
-    def __init__(self):
-        self.line_notify_token = LINE_NOTIFY_TOKEN
+    def __init__(self, token):
+        self.line_notify_token = token
         self.line_notify_api = "https://notify-api.line.me/api/notify"
         self.headers = {
           "Authorization": f"Bearer {self.line_notify_token}"
