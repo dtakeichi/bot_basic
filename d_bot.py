@@ -52,7 +52,7 @@ while 1:
         while 1:
             now_price = get_ohlcv(limit=1)['low'][199]
             entry_price * 1.01 < now_price
-            long_close(bybit) # 5分後にポジションは自動で解消することにする
+            long_close(bybit)
             line_notify.send(f'close at {now_price}')
             break
             
