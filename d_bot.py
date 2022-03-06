@@ -1,4 +1,3 @@
-
 import pandas as pd
 import requests
 import time
@@ -23,7 +22,7 @@ from line_notify import LineNotify
 bybit = ccxt.bybit(
             {
                 "apiKey": "???",
-                "secret": "???????",
+                "secret": "??????",
                 "urls": {
                     "api": "https://api-testnet.bybit.com/" # testnet（デモ版）を使用する場合はこの記述が必要
                 }
@@ -38,22 +37,25 @@ line_notify = LineNotify(token = LINE_NOTIFY_TOKEN)
 
 """
 ## 実行部分 ##
+# taker fee = 0.00075
 """
 
 while 1:
+    entry_signal = False
     df = get_ohlcv(limit=1)
     entry_signal = calc_entry_signal(df)
     
     if entry_signal == True:
-        long_entry(bybit)
+        entry_order_log = long_entry(bybit) #参入し注文状況を受け取る
         entry_price = get_ohlcv(limit=1)['close'][199] #参入時の価格を保持
         line_notify.send(f'entry at {entry_price}')
-        time.sleep(100)
+        time.sleep(60)
         while 1:
-            now_price = get_ohlcv(limit=1)['low'][199]
-            entry_price * 1.01 < now_price
-            long_close(bybit)
-            line_notify.send(f'close at {now_price}')
-            break
+            time.sleep(10)
+            best_ask = bybit.fetch_order_book("BTC/USDT")['asks'][0][0]
+            if entry_price * 1.0025 < best_ask: # 1 + 2*taker = 1.0015 
+                long_close(bybit) 
+                line_notify.send(f'close at {best_ask}')
+                break
             
     time.sleep(60)
