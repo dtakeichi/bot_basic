@@ -24,6 +24,7 @@ def long_entry(instance, qty=0.001):
             "qty": qty
             }
         )
+    return order
 
 def long_close(instance, qty=0.001):
     """
@@ -43,6 +44,7 @@ def long_close(instance, qty=0.001):
             "reduce_only":True # 反対取引をしてポジションを解消しようとする (ドテン)
             }
         )
+    return order
 
 def get_position(instance):
     """
