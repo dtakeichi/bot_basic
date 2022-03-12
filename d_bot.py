@@ -53,6 +53,9 @@ while 1:
         while 1:
             time.sleep(10)
             best_ask = bybit.fetch_order_book("BTC/USDT")['asks'][0][0]
+            # 改良
+            # close_signal = calc_close_signal()
+            # if close_signal == Ture:
             if entry_price * 1.0025 < best_ask: # 1 + 2*taker = 1.0015 
                 long_close(bybit) 
                 line_notify.send(f'close at {best_ask}')
