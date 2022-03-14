@@ -12,7 +12,9 @@ import requests
 from functions import get_ohlcv
 from functions2 import long_entry
 from functions2 import long_close
+from functions2 import limit_long_close
 from strategy import calc_entry_signal
+from strategy import calc_close_signal
 from line_notify import LineNotify
 
 
@@ -21,8 +23,8 @@ from line_notify import LineNotify
 """
 bybit = ccxt.bybit(
             {
-                "apiKey": "???",
-                "secret": "??????",
+                "apiKey": "?",
+                "secret": "?",
                 "urls": {
                     "api": "https://api-testnet.bybit.com/" # testnet（デモ版）を使用する場合はこの記述が必要
                 }
@@ -31,15 +33,17 @@ bybit = ccxt.bybit(
 symbol = "BTC/USDT" 
 amount = 0.01
 
-LINE_NOTIFY_TOKEN = "???"
+LINE_NOTIFY_TOKEN = "?"
 line_notify = LineNotify(token = LINE_NOTIFY_TOKEN)
 
 
 """
 ## 実行部分 ##
 # taker fee = 0.00075
+# maker fee = 
 """
 
+line_notify.send('bot runnning...')
 while 1:
     entry_signal = False
     df = get_ohlcv(limit=1)
@@ -49,16 +53,16 @@ while 1:
         entry_order_log = long_entry(bybit) #参入し注文状況を受け取る
         entry_price = get_ohlcv(limit=1)['close'][199] #参入時の価格を保持
         line_notify.send(f'entry at {entry_price}')
-        time.sleep(60)
+        time.sleep(10)
+
         while 1:
             time.sleep(10)
-            best_ask = bybit.fetch_order_book("BTC/USDT")['asks'][0][0]
-            # 改良
-            # close_signal = calc_close_signal()
-            # if close_signal == Ture:
-            if entry_price * 1.0025 < best_ask: # 1 + 2*taker = 1.0015 
-                long_close(bybit) 
+            df2 = get_ohlcv(limit=1)
+            best_ask = bybit.fetch_order_book("BTC/USDT")['asks'][0][0] 
+            close_signal = calc_close_signal(df=df2, price = entry_price, ask = best_ask)
+            if close_signal == True:
+                colse_order_log = limit_long_close(bybit, price = best_ask + 0.5, qty=0.001) 
                 line_notify.send(f'close at {best_ask}')
                 break
             
-    time.sleep(60)
+    time.sleep(10)
