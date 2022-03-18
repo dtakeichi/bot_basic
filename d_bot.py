@@ -61,7 +61,7 @@ while 1:
             best_ask = bybit.fetch_order_book("BTC/USDT")['asks'][0][0] 
             close_signal = calc_close_signal(df=df2, price = entry_price, ask = best_ask)
             if close_signal == True:
-                colse_order_log = limit_long_close(bybit, price = best_ask + 0.5, qty=0.001) 
+                close_order_log = limit_long_close(bybit, price = best_ask + 0.5, qty=0.001) 
                 line_notify.send(f'close at {best_ask}')
                 break
             
