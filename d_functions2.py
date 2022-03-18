@@ -46,6 +46,27 @@ def long_close(instance, qty=0.001):
         )
     return order
 
+def limit_long_close(instance, price ,qty=0.001):
+    """
+    long position をlimit注文で解消
+    """
+    if get_position(instance) != "long":
+        return 0
+    
+    order = instance.create_order(
+            symbol = "BTC/USDT",     # 通貨ペア
+            type = "limit", # 成行注文か指値注文か（market: 成行注文、limit: 指値注文）
+            side = "sell",       # 買いか売りか（buy: 買い、sell: 売り）
+            price = price,
+            amount = qty, # 注文量（BTC)
+            params = {
+             # 取引所に対応したパラメータ
+            "qty": qty,
+            "reduce_only":True # 反対取引をしてポジションを解消しようとする (ドテン)
+            }
+        )
+    return order
+
 def get_position(instance):
     """
     ポジションを long short straddling noneの4つから返します
