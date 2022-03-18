@@ -45,6 +45,7 @@ line_notify = LineNotify(token = LINE_NOTIFY_TOKEN)
 
 line_notify.send('bot runnning...')
 while 1:
+  try: #例外処理
     entry_signal = False
     df = get_ohlcv(limit=1)
     entry_signal = calc_entry_signal(df)
@@ -66,3 +67,6 @@ while 1:
                 break
             
     time.sleep(10)
+  except:
+    line_notify.send(traceback.format_exc())
+    sys.exit() # 何か例外が生じた際はLINE通知を飛ばしてBotを停止する
