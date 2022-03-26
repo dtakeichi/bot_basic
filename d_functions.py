@@ -16,26 +16,25 @@ calc_features関数
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 
-def get_ohlcv(symbol="BTCUSDT", limit=1000, interval=1):
+
+# 関数の中で関数を定義
+def get_ohlcv(symbol="BTCUSDT", limit=200, interval=1):
     """
     使用例
     df = fetch_ohlcv_v2(symbol="XTZUSDT", limit=600,interval=1)
     symbol = 通貨名, limit = 取得行数, interval = 取得間隔(分)
     """
-
-    # 関数の中で関数を定義
-    def fetch_ohlcv(symbol=symbol, l=200, interval=interval, k=1):
-        base_url = "https://api-testnet.bybit.com/public/linear/kline"
-        params = {
+    base_url = "https://api-testnet.bybit.com/public/linear/kline"
+    params = {
             "symbol": symbol,  
             "interval": interval,  
-            "limit": l, # 取得件数(The number of data points to return)
-            "from" : int(time.time() - interval*l*60*k) #今より昔のものをとる　#分・個数=秒
-        }
+            "limit": limit, # 取得件数(The number of data points to return)
+            "from" : int(time.time() - interval*limit*60) #今より昔のものをとる　#分・個数=秒
+    }
     
-        res = requests.get(base_url, params, timeout = 10).json()
-        Time, Open, High, Low, Close, Volume = [],[],[],[],[],[]
-        for i in res['result']:
+    res = requests.get(base_url, params, timeout = 10).json()
+    Time, Open, High, Low, Close, Volume = [],[],[],[],[],[]
+    for i in res['result']:
             Time.append(datetime.fromtimestamp(i["open_time"]))
             Open.append(i["open"])
             High.append(i["high"])
@@ -43,26 +42,17 @@ def get_ohlcv(symbol="BTCUSDT", limit=1000, interval=1):
             Close.append(i["close"])
             Volume.append(i["volume"]) # volumefrom (BTCの単位) vlumeto(USDTの単位)
     
-        candles = pd.DataFrame({
+    candles = pd.DataFrame({
             "time": Time,  # 時刻
             "open": Open,  # 始値
             "high": High,  # 高音
             "low": Low,    # 安値
             "close": Close, # 終値
             "volume": Volume #出来高
-        })
+    })
 
-        return(candles)
+    return(candles)
     
-
-    df = fetch_ohlcv(interval=interval, l=200, k=1)
-    iter = int(limit/200) - 1
-    for i in range(iter):
-        df2 = fetch_ohlcv(interval=interval, l=200, k=i+1)
-        df = pd.concat([df2,df],ignore_index=True)
-        df = df.set_index("time")
-    
-    return(df)
 
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
@@ -155,3 +145,53 @@ def calc_features(df):
     df['STDDEV'] = talib.STDDEV(close, timeperiod=5, nbdev=1)
 
     return df
+
+
+
+def get_ohlcv_v2(symbol="BTCUSDT", limit=1000, interval=1):
+    """
+    使用例
+    df = fetch_ohlcv_v2(symbol="XTZUSDT", limit=600,interval=1)
+    symbol = 通貨名, limit = 取得行数, interval = 取得間隔(分)
+    """
+
+    # 関数の中で関数を定義
+    def fetch_ohlcv(symbol=symbol, l=200, interval=interval, k=1):
+        base_url = "https://api-testnet.bybit.com/public/linear/kline"
+        params = {
+            "symbol": symbol,  
+            "interval": interval,  
+            "limit": l, # 取得件数(The number of data points to return)
+            "from" : int(time.time() - interval*l*60*k) #今より昔のものをとる　#分・個数=秒
+        }
+    
+        res = requests.get(base_url, params, timeout = 10).json()
+        Time, Open, High, Low, Close, Volume = [],[],[],[],[],[]
+        for i in res['result']:
+            Time.append(datetime.fromtimestamp(i["open_time"]))
+            Open.append(i["open"])
+            High.append(i["high"])
+            Low.append(i["low"])
+            Close.append(i["close"])
+            Volume.append(i["volume"]) # volumefrom (BTCの単位) vlumeto(USDTの単位)
+    
+        candles = pd.DataFrame({
+            "time": Time,  # 時刻
+            "open": Open,  # 始値
+            "high": High,  # 高音
+            "low": Low,    # 安値
+            "close": Close, # 終値
+            "volume": Volume #出来高
+        })
+
+        return(candles)
+    
+
+    df = fetch_ohlcv(interval=interval, l=200, k=1)
+    iter = int(limit/200) - 1
+    for i in range(iter):
+        df2 = fetch_ohlcv(interval=interval, l=200, k=i+1)
+        df = pd.concat([df2,df],ignore_index=True)
+        df = df.set_index("time")
+    
+    return(df)
