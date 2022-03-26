@@ -5,6 +5,7 @@ from pprint import pprint
 long_entry関数
 long_close関数
 get_position関数
+cancel_all_orders関数
 """
 
 def long_entry(instance, qty=0.001):
@@ -89,3 +90,12 @@ def get_position(instance):
         return "short" 
     else:
         return "none"
+
+def cancel_all_orders(instance):
+    #全ての注文をキャンセル
+    orders = instance.fetch_open_orders(symbol = "BTC/USDT")
+
+    for o in orders:
+	    instance.cancel_order(
+		    symbol = "BTC/USDT",
+		    id = o["id"])
